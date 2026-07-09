@@ -1,0 +1,34 @@
+services:
+  kiloton:
+    build:
+      context: .
+      # Pin the Kilo CLI version baked into the image (override with KILO_VERSION=x.y.z).
+      args:
+        KILO_VERSION: "${KILO_VERSION:-7.4.3}"
+    ports:
+      - "${KILOTON_PORT:-7655}:7655"
+    environment:
+      KILOTON_PORT: 7655
+      KILOTON_HOST: 0.0.0.0
+      # Optional: pin the kilo binary if it is not on the global PATH
+      # KILO_BIN_PATH: /usr/local/lib/node_modules/@kilocode/cli/bin/kilo
+      # Provider credentials (only needed when you actually send prompts).
+      # Any key kilo supports works; leave blank to use the host auth store below.
+      KILO_API_KEY: "${KILO_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+    volumes:
+      # Your project code that kilo instances should operate on
+      - ./workspace:/workspace
+      # Kiloton layout/config (survives container restarts)
+      - ./data:/data
+      # OPTIONAL: share the host Kilo data + config so you can resume real
+      # host sessions and reuse host auth. Uncomment and adjust the left side
+      # to your OS:
+      #   Linux/macOS:
+      #   - ${HOME}/.local/share/kilo:/root/.local/share/kilo
+      #   - ${HOME}/.config/kilo:/root/.config/kilo
+      #   Windows (PowerShell ${USERPROFILE}):
+      #   - ${USERPROFILE}/.local/share/kilo:/root/.local/share/kilo
+      #   - ${USERPROFILE}/.config/kilo:/root/.config/kilo
+    restart: unless-stopped

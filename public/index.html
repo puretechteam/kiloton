@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiloton</title>
+    <link rel="stylesheet" href="/vendor/xterm/css/xterm.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/vendor/xterm/lib/xterm.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">🐝 Kiloton <span id="brandVersion" class="brand-version"></span></div>
+      <div class="tabs" id="tabs"></div>
+      <div class="actions">
+        <span class="kilo" id="kiloBox">
+          <button id="updateKilo" class="icon-btn info-btn" title="Check for Kilo update" aria-label="Check for Kilo update">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+          <button id="kiloInfoBtn" class="icon-btn info-btn" title="What does Update do?" aria-label="What does Update do?">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="11"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+          <span class="kilo-info" id="kiloInfo">Kilo …</span>
+        </span>
+        <span class="divider"></span>
+        <span class="port" id="portLabel"></span>
+      </div>
+    </header>
+
+    <section class="layoutbar">
+      <label>Rows <input id="rowsInput" type="number" min="1" max="12" /></label>
+      <label>Cols <input id="colsInput" type="number" min="1" max="12" /></label>
+      <button id="applyGrid">Apply grid</button>
+      <button id="autoGrid" title="Pick rows/cols that give every terminal the most space">Auto</button>
+      <button id="addPane">+ Pane</button>
+      <button id="startAll" title="Start every pane in this dashboard">▶ Start all</button>
+      <button id="stopAll" title="Stop every pane in this dashboard">■ Stop all</button>
+      <button id="saveLayout">Save layout</button>
+      <button id="refreshSessions" class="icon-btn" title="Refresh session list">⟳ Sessions</button>
+    </section>
+
+    <main id="grid" class="grid"></main>
+
+    <div id="kiloUpdateInfo" class="info-pop hidden">
+      <div class="info-pop-title">Update Kilo</div>
+      <p>Reinstalls the global <code>kilo</code> CLI. On Windows the binary is locked while any Kilo session is running, so the update <strong>force-stops every Kilo instance</strong> on this machine first — including other terminals and any open chat. The dashboard server keeps running; reopen Kilo and restart your panes afterward.</p>
+      <button id="kiloUpdateInfoClose" class="info-pop-close">Got it</button>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

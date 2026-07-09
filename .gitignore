@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Local layout / runtime state (regenerated on first run)
+config.json
+data/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# Coverage / test output
+coverage/
+.kiloton-e2e-*/
+
+# Private dev docs (not for end users)
+MANUAL_TEST.md
+REVIEW.md
