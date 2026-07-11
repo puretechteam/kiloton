@@ -31,6 +31,15 @@ desktop.ini
 coverage/
 .kiloton-e2e-*/
 
+# e2e transcript-download artifacts
+*.transcript.txt
+
 # Private dev docs (not for end users)
 MANUAL_TEST.md
 REVIEW.md
+
+# ESLint cache
+.eslintcache
+
+# Local plans / scratch dropped in the repo (the canonical plan lives outside it)
+*.plan.md

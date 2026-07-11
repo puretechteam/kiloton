@@ -45,6 +45,12 @@ body {
   font-weight: bold;
   color: var(--accent);
   white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brand:hover {
+  text-decoration: underline;
 }
 
 .brand-version {
@@ -125,6 +131,68 @@ body {
 
 .layoutbar input[type="number"] {
   width: 48px;
+  height: 26px;
+  box-sizing: border-box;
+}
+
+/* Every button in the layout bar shares one height so the row reads evenly
+   (plain buttons and `.icon-btn` glyph buttons are otherwise different sizes). */
+.layoutbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  box-sizing: border-box;
+}
+
+.layoutbar .icon-btn {
+  min-height: 26px;
+}
+
+.layoutbar #search {
+  flex: 1 1 200px;
+  min-width: 140px;
+  max-width: 320px;
+  height: 26px;
+  box-sizing: border-box;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.health {
+  color: var(--muted);
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+#health .running {
+  color: var(--green);
+}
+
+#health .exited {
+  color: var(--red);
+}
+
+.pane-head .pane-label {
+  color: var(--accent);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pane-head .pane-label:empty {
+  display: none;
 }
 
 button {
@@ -147,6 +215,11 @@ button {
 button:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .grid {
@@ -182,7 +255,6 @@ button:hover {
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   align-content: flex-start;
-  min-height: 64px;
   overflow: visible;
 }
 
@@ -289,6 +361,17 @@ button:hover {
   display: none !important;
 }
 
+/* The xterm canvas and viewport MUST keep pointer/wheel events so mouse
+   reporting and wheel scrolling reach the PTY. The running-pane overlay is
+   display:none while a pane runs (see .overlay.hidden), so it never intercepts
+   clicks; nothing else here may set pointer-events:none on these elements. */
+.term .xterm,
+.term .xterm-viewport,
+.term .xterm-screen,
+.term .xterm-rows {
+  pointer-events: auto;
+}
+
 .overlay {
   position: absolute;
   inset: 0;
@@ -329,7 +412,6 @@ button:hover {
 }
 
 .pane-head .hamburger {
-  margin-left: auto;
   background: transparent;
   border: none;
   color: var(--muted);
@@ -344,7 +426,9 @@ button:hover {
 }
 
 .pane-menu {
-  position: absolute;
+  position: fixed;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
   z-index: 5;
   display: flex;
   flex-direction: column;
@@ -529,4 +613,118 @@ button:hover {
 .ctx-menu .ctx-item:hover {
   background: var(--panel-2);
   color: var(--accent);
+}
+
+/* ---------- bulk selection (photo-app style) ---------- */
+
+/* Per-pane checkbox: hidden until the dashboard enters selection mode. */
+.pane-select {
+  display: none;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.grid.selecting .pane-select {
+  display: inline-block;
+}
+
+/* Highlight a selected pane's whole frame. */
+.pane.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* "Select" toggle reflects active state. */
+#selectMode.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Floating bulk-action bar that appears while selection mode is on. */
+.selection-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+  flex-wrap: wrap;
+  max-width: calc(100vw - 24px);
+}
+
+.selection-bar.hidden {
+  display: none;
+}
+
+.selection-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  box-sizing: border-box;
+}
+
+.selection-bar .sel-count {
+  color: var(--muted);
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.selection-bar .sel-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+}
+
+.selection-bar .sel-spacer {
+  flex: 1 1 8px;
+}
+
+.selection-bar button[data-sel-action].danger:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.selection-bar button[data-sel-action]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Copy-resolved-path button inside the Dir field. Sized to match the text
+   input and uses flex centering so the glyph stays optically centered. */
+.pane-head .dir-label .copy-dir {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+
+.pane-head .dir-label .copy-dir:hover {
+  opacity: 1;
+}
+
+/* Q6: transcript copy/download buttons in the per-pane hamburger menu. They
+   sit in a menu-actions row, so reuse that flex layout with a small gap. */
+.pane-menu .menu-actions button {
+  flex: 1 1 auto;
 }

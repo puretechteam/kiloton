@@ -4,12 +4,16 @@ services:
       context: .
       # Pin the Kilo CLI version baked into the image (override with KILO_VERSION=x.y.z).
       args:
-        KILO_VERSION: "${KILO_VERSION:-7.4.3}"
+        KILO_VERSION: "${KILO_VERSION:-7.4.5}"
     ports:
       - "${KILOTON_PORT:-7655}:7655"
     environment:
       KILOTON_PORT: 7655
       KILOTON_HOST: 0.0.0.0
+      # Optional API + WebSocket auth: when set, every /api request and WS
+      # upgrade needs this token (via Authorization header or ?token= query).
+      # Required for safe LAN exposure with KILOTON_HOST=0.0.0.0 above.
+      # KILOTON_TOKEN: change-me
       # Optional: pin the kilo binary if it is not on the global PATH
       # KILO_BIN_PATH: /usr/local/lib/node_modules/@kilocode/cli/bin/kilo
       # Provider credentials (only needed when you actually send prompts).
@@ -31,4 +35,7 @@ services:
       #   Windows (PowerShell ${USERPROFILE}):
       #   - ${USERPROFILE}/.local/share/kilo:/root/.local/share/kilo
       #   - ${USERPROFILE}/.config/kilo:/root/.config/kilo
+    # Give the server time to flush config.json on SIGTERM before Docker
+    # escalates to SIGKILL (the server's shutdown handler has a 1s fallback).
+    stop_grace_period: 10s
     restart: unless-stopped
