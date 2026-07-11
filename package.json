@@ -25,6 +25,9 @@
   },
   "devDependencies": {
     "eslint": "^9.0.0",
-    "jsdom": "^29.1.1"
+    "jsdom": "^25.0.1"
+  },
+  "overrides": {
+    "html-encoding-sniffer": "^4.0.0"
   }
 }
